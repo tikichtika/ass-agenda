@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<!-- Set the default language to French, which will be updated by JS -->
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- The title will be updated by JavaScript based on the selected language -->
+    <title>Qui Nous Sommes - Association AGENDA</title>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts for a professional look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* General body styling */
+        body {
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+            background-color: #fdfdfd;
+        }
+
+        /* --- Green Luxe Scrollbar --- */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, #16a34a, #22c55e);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(45deg, #15803d, #16a34a);
+        }
+
+
+        /* Gradient Text for Headings */
+        .gradient-text {
+            background: linear-gradient(45deg, #22c55e, #16a34a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* --- LANGUAGE SELECTOR --- */
+        .language-selector {
+            position: relative;
+        }
+        .language-selector-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+        }
+        .language-selector-button:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        .language-selector-button img {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .language-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            z-index: 60;
+            min-width: 160px;
+        }
+        .language-selector:hover .language-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .language-option {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s ease;
+            color: #333;
+        }
+        .language-option:hover {
+            background-color: #f4f4f5;
+        }
+        .language-option img {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* --- NAVBAR STYLES --- */
+        .navbar {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 50;
+            transition: all 0.3s ease-in-out;
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.07);
+        }
+        .nav-link {
+            color: #374151;
+            text-shadow: none;
+            position: relative;
+            padding-bottom: 4px;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #16a34a;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+        .nav-link.active {
+            color: #16a34a;
+            font-weight: 600;
+        }
+
+        
+        /* --- RTL SPACING FIXES --- */
+        [dir="rtl"] .space-x-10 > * + * {
+            margin-right: 2.5rem;
+            margin-left: 0 !important;
+        }
+        [dir="rtl"] .space-x-4 > * + * {
+            margin-right: 1rem;
+            margin-left: 0 !important;
+        }
+        [dir="rtl"] .ml-4 {
+            margin-left: 0;
+            margin-right: 1rem;
+        }
+        [dir="rtl"] .md\:text-left {
+            text-align: right !important;
+        }
+        [dir="rtl"] .md\:justify-start {
+            justify-content: flex-end !important;
+        }
+        
+        [dir="rtl"] .md\:border-l-4 {
+            border-left-width: 0;
+            border-right-width: 4px;
+        }
+        [dir="rtl"] .md\:pl-8 {
+            padding-left: 0;
+            padding-right: 2rem;
+        }
+
+        /* --- ANIMATIONS --- */
+        .animate-on-scroll {
+            opacity: 0;
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .animate-on-scroll.slide-in-left { transform: translateX(-50px); }
+        .animate-on-scroll.slide-in-right { transform: translateX(50px); }
+        .animate-on-scroll.slide-in-up { transform: translateY(50px); }
+        .animate-on-scroll.zoom-in { transform: scale(0.9); }
+
+        .animate-on-scroll.is-visible {
+            opacity: 1;
+            transform: none;
+        }
+
+        /* --- PAGE-SPECIFIC STYLES --- */
+        .page-hero {
+            padding-top: 150px;
+            padding-bottom: 80px;
+            background-color: #f8fafc;
+            position: relative;
+            overflow: hidden;
+        }
+        .page-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(34, 197, 94, 0.1), transparent 40%),
+                radial-gradient(circle at 80% 30%, rgba(16, 163, 74, 0.1), transparent 40%);
+            animation: aurora-flow 25s linear infinite;
+            z-index: 0;
+        }
+        @keyframes aurora-flow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .vision-card, .objective-card {
+            background-color: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border-top: 4px solid #22c55e;
+            transition: all 0.3s ease;
+        }
+        .vision-card:hover, .objective-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 35px rgba(34, 197, 94, 0.15);
+        }
+        
+
+    </style>
+</head>
+<body class="bg-white text-gray-800">
+
+    <header id="navbar" class="navbar">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html"><div class="flex items-center">
+                <img style="border-radius: 8px; " src="Agenda (2).png" alt="Association Logo" class="h-12">
+            </div></a>
+            <div class="hidden md:flex items-center gap-10">
+                <a href="about.html" class="nav-link active" data-translate="nav_about">Qui Sommes-Nous</a>
+                <a href="activities.html" class="nav-link" data-translate="nav_activities">Nos Activités</a>
+                <a href="projects.html" class="nav-link" data-translate="nav_projects">Nos Projets</a>
+                <a href="partners.html" class="nav-link" data-translate="nav_partners">Nos Partenaires</a>
+                <a href="contact.html" class="nav-link" data-translate="nav_contact">Contact</a>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <!-- Language switcher -->
+                <div class="language-selector">
+                    <button class="language-selector-button" aria-label="Select Language">
+                         <img id="selected-lang-icon" src="https://flagcdn.com/w40/fr.png" alt="French Flag">
+                         <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="language-dropdown">
+                        <div class="language-option" onclick="changeLanguage('fr')">
+                            <img src="https://flagcdn.com/w40/fr.png" alt="French Flag">
+                            <span>Français</span>
+                        </div>
+                        <div class="language-option" onclick="changeLanguage('en')">
+                            <img src="https://flagcdn.com/w40/us.png" alt="USA Flag">
+                            <span>English</span>
+                        </div>
+                        <div class="language-option" onclick="changeLanguage('ar')">
+                            <img src="https://flagcdn.com/w40/ma.png" alt="Moroccan Flag">
+                            <span>العربية</span>
+                        </div>
+                    </div>
+                </div>
+                <a href="contact.html" class="hidden md:block bg-green-500 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-green-600 contact-btn" data-translate="contact_us_btn">Contactez-Nous</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden text-gray-700 focus:outline-none">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg">
+            <a href="about.html" class="block py-3 px-6 text-gray-700 hover:bg-gray-50" data-translate="nav_about">Qui Sommes-Nous</a>
+            <a href="activities.html" class="block py-3 px-6 text-gray-700 hover:bg-gray-50" data-translate="nav_activities">Nos Activités</a>
+            <a href="projects.html" class="block py-3 px-6 text-gray-700 hover:bg-gray-50" data-translate="nav_projects">Nos Projets</a>
+            <a href="partners.html" class="block py-3 px-6 text-gray-700 hover:bg-gray-50" data-translate="nav_partners">Nos Partenaires</a>
+            <a href="contact.html" class="block py-3 px-6 text-gray-700 hover:bg-gray-50" data-translate="nav_contact">Contact</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="page-hero">
+            <div class="container mx-auto px-6 text-center relative z-10">
+                <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-4 gradient-text animate-on-scroll slide-in-up" data-translate="about_title">Qui Sommes-Nous</h1>
+                <p class="text-lg md:text-xl max-w-3xl mx-auto text-gray-600 animate-on-scroll slide-in-up" style="transition-delay: 100ms;" data-translate="about_intro">
+                    Association AGENDA est une organisation à but non lucratif dédiée à la promotion de systèmes agricoles modernes, respectueux de l’environnement et adaptés aux réalités socio-économiques du monde rural.
+                </p>
+            </div>
+        </section>
+
+        <section class="py-24 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16 animate-on-scroll slide-in-up">
+                    <h2 class="text-3xl md:text-4xl font-bold gradient-text" data-translate="mission_title">Notre Mission</h2>
+                </div>
+                <div class="grid md:grid-cols-2 gap-16 items-center">
+                    <div class="animate-on-scroll slide-in-left">
+                        <img src="assets/img/2.jpg" alt="Farmers collaborating in a field">
+                    </div>
+                    <div class="animate-on-scroll slide-in-right">
+                        <p class="text-gray-600 mb-8" data-translate="mission_text">
+                            Nous réunissons agriculteurs, chercheurs, ingénieurs, agents de développement et professionnels du secteur privé autour d’un objectif commun : réinventer l’agriculture pour qu’elle soit à la fois productive, durable et résiliente face aux défis climatiques et alimentaires.
+                        </p>
+                         <ul class="space-y-4 text-gray-700">
+                            <li class="flex items-start"><span class="text-green-500 font-bold mr-3 rtl:mr-0 rtl:ml-3 mt-1">&#10003;</span> <span data-translate="mission_point_1">Optimiser l’utilisation des ressources naturelles (eau, sol, énergie).</span></li>
+                            <li class="flex items-start"><span class="text-green-500 font-bold mr-3 rtl:mr-0 rtl:ml-3 mt-1">&#10003;</span> <span data-translate="mission_point_2">Augmenter la productivité tout en réduisant l’impact écologique.</span></li>
+                            <li class="flex items-start"><span class="text-green-500 font-bold mr-3 rtl:mr-0 rtl:ml-3 mt-1">&#10003;</span> <span data-translate="mission_point_3">Protéger la biodiversité et les écosystèmes ruraux.</span></li>
+                            <li class="flex items-start"><span class="text-green-500 font-bold mr-3 rtl:mr-0 rtl:ml-3 mt-1">&#10003;</span> <span data-translate="mission_point_4">Contribuer à la sécurité alimentaire et au bien-être des populations.</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-24 bg-gray-50">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16 animate-on-scroll slide-in-up">
+                    <h2 id="vision" class="text-3xl md:text-4xl font-bold gradient-text" data-translate="vision_title">Notre Vision</h2>
+                    <p class="text-gray-600 mt-4 max-w-3xl mx-auto" data-translate="vision_subtitle">Chez AGENDA, nous croyons qu’une agriculture moderne et durable est la clé d’un avenir prospère, respectueux de l’environnement et équitable pour les générations futures.</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="vision-card animate-on-scroll zoom-in">
+                        <h3 class="text-xl font-bold mb-3" data-translate="vision_pillar_1_title">Promouvoir le savoir et la coopération</h3>
+                        <p class="text-gray-600" data-translate="vision_pillar_1_text">Faciliter l’information, le partage des connaissances et la mise en réseau des acteurs pour favoriser l’adaptation et l’adoption des principes de l’agriculture de conservation au Maroc.</p>
+                    </div>
+                    <div class="vision-card animate-on-scroll zoom-in" style="transition-delay: 200ms;">
+                        <h3 class="text-xl font-bold mb-3" data-translate="vision_pillar_2_title">Préserver l’environnement et la biodiversité</h3>
+                        <p class="text-gray-600" data-translate="vision_pillar_2_text">Protéger les ressources naturelles (eau, sol, végétation) et créer des conditions favorables aux équilibres écologiques et à la biodiversité.</p>
+                    </div>
+                    <div class="vision-card animate-on-scroll zoom-in" style="transition-delay: 400ms;">
+                        <h3 class="text-xl font-bold mb-3" data-translate="vision_pillar_3_title">Renforcer la durabilité économique et sociale</h3>
+                        <p class="text-gray-600" data-translate="vision_pillar_3_text">Démontrer et promouvoir l’impact positif de l’agriculture de conservation sur la productivité durable, la sécurité alimentaire et les revenus ruraux.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-24 bg-white">
+             <div class="container mx-auto px-6">
+                <div class="text-center mb-16 animate-on-scroll slide-in-up">
+                    <h2 class="text-3xl md:text-4xl font-bold gradient-text" data-translate="objectives_title">Nos Objectifs</h2>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="objective-card animate-on-scroll zoom-in">
+                        <h3 class="text-xl font-bold mb-3" data-translate="objective_1_title">Fédérer les agriculteurs</h3>
+                        <p class="text-gray-600" data-translate="objective_1_text">Favoriser le regroupement des agriculteurs pratiquant le semis direct autour des entreprises de services agricoles pour faciliter l’accès aux équipements et techniques modernes.</p>
+                    </div>
+                    <div class="objective-card animate-on-scroll zoom-in" style="transition-delay: 200ms;">
+                        <h3 class="text-xl font-bold mb-3" data-translate="objective_2_title">Renforcer les capacités</h3>
+                        <p class="text-gray-600" data-translate="objective_2_text">Aider les agriculteurs à mieux maîtriser les principes de l’agriculture de conservation et à devenir des relais de savoir au sein de leurs communautés.</p>
+                    </div>
+                    <div class="objective-card animate-on-scroll zoom-in" style="transition-delay: 400ms;">
+                        <h3 class="text-xl font-bold mb-3" data-translate="objective_3_title">Contribuer aux politiques agricoles</h3>
+                        <p class="text-gray-600" data-translate="objective_3_text">Participer activement à l’élaboration des programmes de développement liés à l’agriculture de conservation en apportant notre expertise.</p>
+                    </div>
+                    <div class="objective-card animate-on-scroll zoom-in" style="transition-delay: 600ms;">
+                        <h3 class="text-xl font-bold mb-3" data-translate="objective_4_title">Développer des partenariats</h3>
+                        <p class="text-gray-600" data-translate="objective_4_text">Établir des partenariats stratégiques pour accompagner la mise à niveau des exploitations et valoriser la production durable.</p>
+                    </div>
+                </div>
+                <div class="mt-12 text-center text-gray-700 animate-on-scroll slide-in-up">
+                    <p class="max-w-4xl mx-auto" data-translate="objectives_conclusion">👉 Ainsi, nos objectifs visent à faire de l’agriculture de conservation un moteur de développement durable, au service de la sécurité alimentaire, de la protection des ressources naturelles et du progrès social et économique du monde rural.</p>
+                </div>
+            </div>
+        </section>
+        
+    </main>
+    
+<footer id="contact" class="bg-gray-800 text-white pt-16">
+    <div class="container mx-auto px-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center md:text-start">
+
+            <div class="md:col-span-2">
+                <img style="border-radius: 8px;" src="Agenda (2).png" alt="Association Logo" class="h-12 mb-4 mx-auto md:mx-0">
+                <p class="text-gray-400" data-translate="footer_about">Cultiver un avenir durable pour l'agriculture marocaine grâce à l'innovation et à la communauté.</p>
+            </div>
+
+            <div>
+                <h4 class="font-bold text-lg mb-4" data-translate="footer_links_title">Liens Rapides</h4>
+                <ul>
+                    <li class="mb-2"><a href="about.html" class="hover:text-green-400 transition-colors" data-translate="nav_about">Qui Sommes-Nous</a></li>
+                    <li class="mb-2"><a href="activities.html" class="hover:text-green-400 transition-colors" data-translate="nav_activities">Nos Activités</a></li>
+                    <li class="mb-2"><a href="projects.html" class="hover:text-green-400 transition-colors" data-translate="nav_projects">Nos Projets</a></li>
+                    <li class="mb-2"><a href="partners.html" class="hover:text-green-400 transition-colors" data-translate="nav_partners">Nos Partenaires</a></li>
+                </ul>
+            </div>
+
+            <div class="flex flex-col items-center md:items-start">
+                <h4 class="font-bold text-lg mb-4" data-translate="footer_follow_us">Suivez-Nous</h4>
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors" aria-label="Facebook"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M22.675 0h-21.35C.59 0 0 .59 0 1.325v21.35C0 23.41.59 24 1.325 24H12.82v-9.29H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.735 0 1.325-.59 1.325-1.325V1.325C24 .59 23.405 0 22.675 0z"/></svg></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors" aria-label="Instagram"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.012 3.584-.07 4.85c-.148 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.012-3.584.07-4.85c.148-3.225 1.664-4.771 4.919-4.919C8.416 2.175 8.796 2.163 12 2.163zm0-1.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072s3.667-.014 4.947-.072c4.358-.2 6.78-2.618 6.98-6.98.059-1.281.073-1.689.073-4.948s-.014-3.667-.072-4.947c-.2-4.358-2.618-6.78-6.98-6.98C15.668 1.014 15.259 1 12 1zm0 5.838a5 5 0 100 10 5 5 0 000-10zm0 8.838a3.838 3.838 0 110-7.676 3.838 3.838 0 010 7.676zm4.938-9.712a1.162 1.162 0 100-2.324 1.162 1.162 0 000 2.324z"/></svg></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors" aria-label="WhatsApp"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.38 1.25 4.82l-1.34 4.89 5.02-1.32c1.39.71 2.97 1.12 4.6 1.12h.01c5.46 0 9.91-4.45 9.91-9.91s-4.45-9.91-9.91-9.91zM17.47 14.38c-.2-.1-.72-.36-1.08-.5-2.83-.94-2.83-2.83 0-3.77.36-.14.88-.4 1.08-.5.2-.1.3-.24.3-.44s-.1-.3-.2-.4l-1.58-1.58c-.1-.1-.24-.2-.4-.2s-.3.05-.4.15l-.78.78c-.2.2-.4.4-.6.5s-.4.2-.6.1c-1.3-.45-2.34-1.49-3.22-2.37-.88-.88-1.92-1.92-2.37-3.22-.1-.2-.05-.4.1-.6s.3-.4.5-.6l.78-.78c.1-.1.15-.3.15-.4s-.1-.3-.2-.4L7.3 3.53c-.1-.1-.24-.2-.4-.2s-.3.05-.4.15L5.57 4.4c-.2.2-.4.4-.5.6s-.2.4-.1.6c.45 1.3 1.49 2.34 2.37 3.22.88.88 1.92 1.92 3.22 2.37.2.1.4.15.6.05s.4-.2.6-.5l.78-.78c.1-.1.3-.15.4-.15s.3.05.4.15l1.58 1.58c.1.1.2.24.2.4s-.05.3-.15.4z"/></svg></a>
+                    <a href="mailto:contact@agridurable.org" class="text-gray-400 hover:text-white transition-colors" aria-label="Email"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/></svg></a>
+                </div>
+            </div>
+        </div>
+        <div style="padding-bottom: 10px;" class="mt-8 border-t border-gray-700 pt-8 text-center text-gray-400">
+            <p data-translate="footer_copyright">&copy; 2025 Association pour une Agriculture Durable. Tous Droits Réservés.</p>
+        </div>
+    </div>
+</footer>
+
+
+    <script>
+        const translations = {
+            fr: {
+                title: "Qui Sommes-Nous - Association AGENDA",
+                nav_about: "Qui Sommes-Nous",
+                nav_activities: "Nos Activités",
+                nav_projects: "Nos Projets",
+                nav_partners: "Nos Partenaires",
+                nav_contact: "Contact",
+                contact_us_btn: "Contactez-Nous",
+                about_title: "Qui Sommes-Nous",
+                about_intro: "Association AGENDA est une organisation à but non lucratif dédiée à la promotion de systèmes agricoles modernes, respectueux de l’environnement et adaptés aux réalités socio-économiques du monde rural.",
+                mission_title: "Notre Mission",
+                mission_text: "Nous réunissons agriculteurs, chercheurs, ingénieurs, agents de développement et professionnels du secteur privé autour d’un objectif commun : réinventer l’agriculture pour qu’elle soit à la fois productive, durable et résiliente face aux défis climatiques et alimentaires.",
+                mission_point_1: "Optimiser l’utilisation des ressources naturelles (eau, sol, énergie).",
+                mission_point_2: "Augmenter la productivité tout en réduisant l’impact écologique.",
+                mission_point_3: "Protéger la biodiversité et les écosystèmes ruraux.",
+                mission_point_4: "Contribuer à la sécurité alimentaire et au bien-être des populations.",
+                support_text: "Nous soutenons particulièrement le recours à des solutions intelligentes telles que l’agriculture de précision, le semis direct ou encore les techniques de conservation des sols et de l’eau, afin de bâtir une agriculture innovante, compétitive et respectueuse de l’environnement.",
+                vision_title: "Notre Vision",
+                vision_subtitle: "Chez AGENDA, nous croyons qu’une agriculture moderne et durable est la clé d’un avenir prospère, respectueux de l’environnement et équitable pour les générations futures.",
+                vision_pillar_1_title: "Promouvoir le savoir et la coopération",
+                vision_pillar_1_text: "Faciliter l’information, le partage des connaissances et la mise en réseau des acteurs afin de favoriser l’adaptation et l’adoption des principes de l’agriculture de conservation au Maroc.",
+                vision_pillar_2_title: "Préserver l’environnement et la biodiversité",
+                vision_pillar_2_text: "Protéger les ressources naturelles (eau, sol, végétation) et de créer des conditions favorables aux équilibres écologiques et à la biodiversité.",
+                vision_pillar_3_title: "Renforcer la durabilité économique et sociale",
+                vision_pillar_3_text: "Démontrer et promouvoir l’impact direct et positif de l’agriculture de conservation sur la productivité agricole durable, la sécurité alimentaire et les revenus ruraux.",
+                objectives_title: "Nos Objectifs",
+                objective_1_title: "Fédérer les agriculteurs",
+                objective_1_text: "Favoriser le regroupement des agriculteurs pratiquant le semis direct autour des entreprises de services agricoles pour faciliter l’accès aux équipements et aux techniques modernes.",
+                objective_2_title: "Renforcer les capacités",
+                objective_2_text: "Aider les agriculteurs à mieux maîtriser les principes de l’agriculture de conservation et à devenir des relais de savoir au sein de leurs communautés rurales.",
+                objective_3_title: "Contribuer aux politiques agricoles",
+                objective_3_text: "Participer activement à l’élaboration et à la mise en œuvre des programmes de développement liés à l’agriculture de conservation.",
+                objective_4_title: "Développer des partenariats",
+                objective_4_text: "Établir des partenariats stratégiques pour accompagner la mise à niveau des exploitations et valoriser la production issue de l’agriculture durable.",
+                objectives_conclusion: "👉 Ainsi, nos objectifs visent à faire de l’agriculture de conservation un moteur de développement durable, au service de la sécurité alimentaire, de la protection des ressources naturelles et du progrès social et économique du monde rural.",
+                footer_about: "Cultiver un avenir durable pour l'agriculture marocaine grâce à l'innovation et à la communauté.",
+                footer_links_title: "Liens Rapides",
+                footer_follow_us: "Suivez-Nous",
+                footer_copyright: "&copy; 2025 Association pour une Agriculture Durable. Tous Droits Réservés."
+            },
+            en: {
+                title: "Who We Are - AGENDA Association",
+                nav_about: "About Us",
+                nav_activities: "Our Activities",
+                nav_projects: "Our Projects",
+                nav_partners: "Our Partners",
+                nav_contact: "Contact",
+                contact_us_btn: "Contact Us",
+                about_title: "Who We Are",
+                about_intro: "Association AGENDA is a non-profit organization dedicated to promoting modern, environmentally-friendly agricultural systems adapted to the socio-economic realities of rural areas.",
+                mission_title: "Our Mission",
+                mission_text: "We bring together farmers, researchers, engineers, development agents, and private sector professionals around a common goal: to reinvent agriculture to be productive, sustainable, and resilient to climate and food challenges.",
+                mission_point_1: "Optimize the use of natural resources (water, soil, energy).",
+                mission_point_2: "Increase productivity while reducing the ecological impact.",
+                mission_point_3: "Protect biodiversity and rural ecosystems.",
+                mission_point_4: "Contribute to food security and the well-being of populations.",
+                support_text: "We particularly support the use of smart solutions such as precision agriculture, no-till farming, and soil and water conservation techniques to build an innovative, competitive, and environmentally friendly agriculture.",
+                vision_title: "Our Vision",
+                vision_subtitle: "At AGENDA, we believe that modern and sustainable agriculture is the key to a prosperous, environmentally friendly, and equitable future for generations to come.",
+                vision_pillar_1_title: "Promote knowledge and cooperation",
+                vision_pillar_1_text: "We work to facilitate information, knowledge sharing, and networking among stakeholders to promote the adaptation and adoption of conservation agriculture principles in Morocco.",
+                vision_pillar_2_title: "Preserve the environment and biodiversity",
+                vision_pillar_2_text: "Our commitment is to protect natural resources (water, soil, vegetation) and create favorable conditions for ecological balance and biodiversity.",
+                vision_pillar_3_title: "Strengthen economic and social sustainability",
+                vision_pillar_3_text: "We work to demonstrate and promote the positive impact of conservation agriculture on sustainable agricultural productivity, food security, and rural incomes.",
+                objectives_title: "Our Objectives",
+                objective_1_title: "Unite farmers around conservation agriculture",
+                objective_1_text: "We encourage the grouping of farmers practicing no-till farming around agricultural service companies, facilitating access to modern equipment and techniques.",
+                objective_2_title: "Strengthen farmers' skills and autonomy",
+                objective_2_text: "We help farmers master conservation agriculture principles on their farms and become knowledge multipliers within their rural communities.",
+                objective_3_title: "Contribute to agricultural policies",
+                objective_3_text: "AGENDA actively participates in the design and implementation of development programs related to conservation agriculture, providing expertise from its members.",
+                objective_4_title: "Develop partnerships and enhance production",
+                objective_4_text: "We seek to establish strategic partnerships to support the modernization of farms and promote products from sustainable agriculture.",
+                objectives_conclusion: "👉 Thus, our objectives aim to make conservation agriculture a driver of sustainable development, serving food security, the protection of natural resources, and the social and economic progress of rural communities.",
+                footer_about: "Cultivating a sustainable future for Moroccan agriculture through innovation and community.",
+                footer_links_title: "Quick Links",
+                footer_follow_us: "Follow Us",
+                footer_copyright: "&copy; 2025 Association for Sustainable Agriculture. All Rights Reserved."
+            },
+            ar: {
+                title: "من نحن - جمعية أجندة",
+                nav_about: "من نحن",
+                nav_activities: "أنشطتنا",
+                nav_projects: "مشاريعنا",
+                nav_partners: "شركاؤنا",
+                nav_contact: "اتصل بنا",
+                contact_us_btn: "اتصل بنا",
+                about_title: "من نحن",
+                about_intro: "جمعية أجندة هي منظمة غير ربحية مكرسة لتعزيز النظم الزراعية الحديثة التي تحترم البيئة وتتكيف مع الواقع الاجتماعي والاقتصادي للمناطق الريفية.",
+                mission_title: "مهمتنا",
+                mission_text: "نجمع المزارعين والباحثين والمهندسين ووكلاء التنمية والمهنيين في القطاع الخاص حول هدف مشترك: إعادة ابتكار الزراعة لتكون منتجة ومستدامة وقادرة على مواجهة التحديات المناخية والغذائية.",
+                mission_point_1: "الاستخدام الأمثل للموارد الطبيعية (المياه والتربة والطاقة).",
+                mission_point_2: "زيادة الإنتاجية مع تقليل الأثر البيئي.",
+                mission_point_3: "حماية التنوع البيولوجي والنظم البيئية الريفية.",
+                mission_point_4: "المساهمة في الأمن الغذائي ورفاهية السكان.",
+                support_text: "ندعم بشكل خاص استخدام الحلول الذكية مثل الزراعة الدقيقة، والزرع المباشر، وتقنيات الحفاظ على التربة والمياه، لبناء زراعة مبتكرة وتنافسية وصديقة للبيئة.",
+                vision_title: "رؤيتنا",
+                vision_subtitle: "في أجندة، نؤمن بأن الزراعة الحديثة والمستدامة هي مفتاح مستقبل مزدهر، يحترم البيئة ومنصف للأجيال القادمة.",
+                vision_pillar_1_title: "تعزيز المعرفة والتعاون",
+                vision_pillar_1_text: "نعمل على تسهيل الوصول إلى المعلومات وتبادل المعرفة والتواصل بين الفاعلين لتعزيز تكييف واعتماد مبادئ الزراعة المحافظة في المغرب.",
+                vision_pillar_2_title: "الحفاظ على البيئة والتنوع البيولوجي",
+                vision_pillar_2_text: "التزامنا هو حماية الموارد الطبيعية (المياه والتربة والغطاء النباتي) وخلق ظروف مواتية للتوازن البيئي والتنوع البيولوجي.",
+                vision_pillar_3_title: "تعزيز الاستدامة الاقتصادية والاجتماعية",
+                vision_pillar_3_text: "نعمل على إظهار وتعزيز التأثير الإيجابي للزراعة المحافظة على الإنتاجية الزراعية المستدامة والأمن الغذائي ودخل سكان الأرياف.",
+                objectives_title: "أهدافنا",
+                objective_1_title: "توحيد المزارعين حول الزراعة المحافظة",
+                objective_1_text: "نشجع على تجميع المزارعين الذين يمارسون الزرع المباشر حول شركات الخدمات الزراعية، مما يسهل الوصول إلى المعدات والتقنيات الحديثة.",
+                objective_2_title: "تعزيز قدرات واستقلالية المزارعين",
+                objective_2_text: "نساعد المزارعين على إتقان مبادئ الزراعة المحافظة في مزارعهم وأن يصبحوا ناقلين للمعرفة داخل مجتمعاتهم الريفية.",
+                objective_3_title: "المساهمة في السياسات الزراعية",
+                objective_3_text: "تسعى أجندة للمشاركة بنشاط في تصميم وتنفيذ برامج التنمية المتعلقة بالزراعة المحافظة، من خلال تقديم خبرة أعضائها.",
+                objective_4_title: "تطوير الشراكات وتعزيز الإنتاج",
+                objective_4_text: "نسعى لإقامة شراكات استراتيجية لدعم تحديث المزارع وتعزيز المنتجات الزراعية المستدامة.",
+                objectives_conclusion: "👉 وهكذا، تهدف أهدافنا إلى جعل الزراعة المحافظة محركًا للتنمية المستدامة، في خدمة الأمن الغذائي، وحماية الموارد الطبيعية، والتقدم الاجتماعي والاقتصادي في العالم القروي.",
+                footer_about: "زراعة مستقبل مستدام للزراعة المغربية من خلال الابتكار والمجتمع.",
+                footer_links_title: "روابط سريعة",
+                footer_follow_us: "تابعنا",
+                footer_copyright: "&copy; 2025 جمعية الزراعة المستدامة. كل الحقوق محفوظة."
+            }
+        };
+
+        const flagImageSrc = {
+            fr: 'https://flagcdn.com/w40/fr.png',
+            en: 'https://flagcdn.com/w40/us.png',
+            ar: 'https://flagcdn.com/w40/ma.png'
+        };
+
+        function changeLanguage(lang) {
+            if (!translations[lang] || !flagImageSrc[lang]) return;
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+            document.title = translations[lang].title;
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.getAttribute('data-translate');
+                if (translations[lang][key]) {
+                    element.innerHTML = translations[lang][key];
+                }
+            });
+            document.getElementById('selected-lang-icon').src = flagImageSrc[lang];
+            localStorage.setItem('language', lang);
+        }
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const savedLang = localStorage.getItem('language') || 'fr';
+            changeLanguage(savedLang);
+
+            
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    mobileMenuButton.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+    });
+
+            const animatedElements = document.querySelectorAll('.animate-on-scroll');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            animatedElements.forEach(el => observer.observe(el));
+        });
+    </script>
+</body>
+</html>
+

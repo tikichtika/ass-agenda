@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<!-- Set the default language to French, which will be updated by JS -->
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- The title will be updated by JavaScript based on the selected language -->
+    <title>Contact - Association AGENDA</title>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts for a professional look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* General body styling */
+        body {
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+            background-color: #fdfdfd;
+        }
+
+        /* --- Green Luxe Scrollbar --- */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, #16a34a, #22c55e);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(45deg, #15803d, #16a34a);
+        }
+
+
+        /* Gradient Text for Headings */
+        .gradient-text {
+            background: linear-gradient(45deg, #22c55e, #16a34a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* --- LANGUAGE SELECTOR --- */
+        .language-selector {
+            position: relative;
+        }
+        .language-selector-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+        }
+        .language-selector-button:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        .language-selector-button img {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .language-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            z-index: 60;
+            min-width: 160px;
+        }
+        .language-selector:hover .language-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .language-option {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s ease;
+            color: #333;
+        }
+        .language-option:hover {
+            background-color: #f4f4f5;
+        }
+        .language-option img {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* --- NAVBAR STYLES --- */
+        .navbar {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 50;
+            transition: all 0.3s ease-in-out;
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.07);
+        }
+        .nav-link {
+            color: #374151;
+            text-shadow: none;
+            position: relative;
+            padding-bottom: 4px;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #16a34a;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+        .nav-link.active {
+            color: #16a34a;
+            font-weight: 600;
+        }
+
+        
+        /* --- RTL SPACING FIXES --- */
+        [dir="rtl"] .space-x-10 > * + * {
+            margin-right: 2.5rem;
+            margin-left: 0 !important;
+        }
+        [dir="rtl"] .space-x-4 > * + * {
+            margin-right: 1rem;
+            margin-left: 0 !important;
+        }
+        [dir="rtl"] .md\:text-left {
+            text-align: right !important;
+        }
+        [dir="rtl"] .md\:justify-start {
+            justify-content: flex-end !important;
+        }
+        
+        [dir="rtl"] .ml-4 {
+            margin-left: 0;
+            margin-right: 1rem;
+        }
+
+        /* --- ANIMATIONS --- */
+        .animate-on-scroll {
+            opacity: 0;
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .animate-on-scroll.slide-in-up { transform: translateY(50px); }
+        .animate-on-scroll.is-visible {
+            opacity: 1;
+            transform: none;
+        }
+
+        /* --- PAGE-SPECIFIC STYLES --- */
+        .page-hero {
+            padding-top: 150px;
+            padding-bottom: 80px;
+            background-color: #f8fafc;
+            position: relative;
+            overflow: hidden;
+        }
+        .page-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(34, 197, 94, 0.1), transparent 40%),
+                radial-gradient(circle at 80% 30%, rgba(16, 163, 74, 0.1), transparent 40%);
+            animation: aurora-flow 25s linear infinite;
+            z-index: 0;
+        }
+        @keyframes aurora-flow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+
+        
+        /* Contact Form Styles */
+        .contact-form input, .contact-form textarea {
+            border: 1px solid #d1d5db;
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .contact-form input:focus, .contact-form textarea:focus {
+            outline: none;
+            border-color: #22c55e;
+            box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+        }
+
+        #success-overlay {
+    transition: opacity 0.3s ease-in-out;
+}
+#success-card {
+    transition: transform 0.3s ease-in-out;
+    transform: scale(0.95);
+}
+#success-overlay.visible {
+    opacity: 1;
+    visibility: visible;
+}
+#success-overlay.visible #success-card {
+    transform: scale(1);
+}
+
+    </style>
+</head>
+<body class="bg-white text-gray-800">
+
+    <header id="navbar" class="navbar">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html"><div class="flex items-center">
+                <img style="border-radius: 8px; " src="Agenda (2).png" alt="Association Logo" class="h-12">
+            </div></a>
+            <div class="hidden md:flex items-center gap-10">
+                <a href="about.html" class="nav-link" data-translate="nav_about">Qui Sommes-Nous</a>
+                <a href="activities.html" class="nav-link" data-translate="nav_activities">Nos Activités</a>
+                <a href="projects.html" class="nav-link" data-translate="nav_projects">Nos Projets</a>
+                <a href="partners.html" class="nav-link" data-translate="nav_partners">Nos Partenaires</a>
+                <a href="contact.html" class="nav-link active" data-translate="nav_contact">Contact</a>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <!-- Language switcher -->
+                <div class="language-selector">
+                    <button class="language-selector-button" aria-label="Select Language">
+                         <img id="selected-lang-icon" src="https://flagcdn.com/w40/fr.png" alt="French Flag">
+                         <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="language-dropdown">
+                        <div class="language-option" onclick="changeLanguage('fr')">
+                            <img src="https://flagcdn.com/w40/fr.png" alt="French Flag">
+                            <span>Français</span>
+                        </div>
+                        <div class="language-option" onclick="changeLanguage('en')">
+                            <img src="https://flagcdn.com/w40/us.png" alt="USA Flag">
+                            <span>English</span>
+                        </div>
+                        <div class="language-option" onclick="changeLanguage('ar')">
+                            <img src="https://flagcdn.com/w40/ma.png" alt="Moroccan Flag">
+                            <span>العربية</span>
+                        </div>
+                    </div>
+                </div>
+                <a href="contact.html" class="hidden md:block bg-green-500 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-green-600 contact-btn" data-translate="contact_us_btn">Contactez-Nous</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden text-gray-700 focus:outline-none">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg">
+            <a href="about.html" class="block py-3 px-6 text-gray-700 hover:bg-gray-50" data-translate="nav_about">Qui Sommes-Nous</a>
+            <a href="activities.html" class="block py-3 px-6 text-gray-700 hover:bg-gray-50" data-translate="nav_activities">Nos Activités</a>
+            <a href="projects.html" class="block py-3 px-6 text-gray-700 hover:bg-gray-50" data-translate="nav_projects">Nos Projets</a>
+            <a href="partners.html" class="block py-3 px-6 text-gray-700 hover:bg-gray-50" data-translate="nav_partners">Nos Partenaires</a>
+            <a href="contact.html" class="block py-3 px-6 text-gray-700 hover:bg-gray-50" data-translate="nav_contact">Contact</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="page-hero">
+            <div class="container mx-auto px-6 text-center relative z-10">
+                <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-4 gradient-text animate-on-scroll slide-in-up" data-translate="contact_title">Contactez-Nous</h1>
+                <p class="text-lg md:text-xl max-w-3xl mx-auto text-gray-600 animate-on-scroll slide-in-up" style="transition-delay: 100ms;" data-translate="contact_intro">
+                    Nous sommes toujours ravis d'échanger avec vous. N'hésitez pas à nous contacter pour toute question, proposition de partenariat ou simplement pour en savoir plus sur nos actions.
+                </p>
+            </div>
+        </section>
+
+        <section class="py-24 bg-white">
+            <div class="container mx-auto px-6">
+                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                    <!-- Contact Info & Form -->
+                    <div class="lg:col-span-2 animate-on-scroll slide-in-up">
+                        <h2 class="text-3xl font-bold mb-6" data-translate="get_in_touch_title">Restons en contact</h2>
+                        <form action="https://api.web3forms.com/submit" method="POST" class="contact-form space-y-6">
+
+    <input type="hidden" name="access_key" value="63819377-1d79-4463-8ed7-57e85ede8825">
+
+    <div>
+        <label for="name" class="font-medium text-gray-700" data-translate="form_name_label">Nom Complet</label>
+        <input type="text" id="name" name="name" class="mt-2 block w-full" data-translate-placeholder="form_name_placeholder" required>
+    </div>
+    <div>
+        <label for="email" class="font-medium text-gray-700" data-translate="form_email_label">Adresse E-mail</label>
+        <input type="email" id="email" name="email" class="mt-2 block w-full" data-translate-placeholder="form_email_placeholder" required>
+    </div>
+    <div>
+        <label for="subject" class="font-medium text-gray-700" data-translate="form_subject_label">Sujet</label>
+        <input type="text" id="subject" name="subject" class="mt-2 block w-full" data-translate-placeholder="form_subject_placeholder" required>
+    </div>
+    <div>
+        <label for="message" class="font-medium text-gray-700" data-translate="form_message_label">Votre Message</label>
+        <textarea id="message" name="message" rows="5" class="mt-2 block w-full" data-translate-placeholder="form_message_placeholder" required></textarea>
+    </div>
+    
+    <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+
+    <div>
+        <button type="submit" class="w-full bg-green-500 text-white font-bold py-4 px-8 rounded-lg shadow-lg hover:bg-green-600 transition-all duration-300 transform hover:scale-105" data-translate="form_submit_btn">
+            Envoyer le Message
+        </button>
+    </div>
+
+</form>
+                    </div>
+                    <!-- Map & Details -->
+                    <div class="animate-on-scroll slide-in-up" style="transition-delay: 200ms;">
+                         <div class="bg-gray-50 p-8 rounded-2xl h-full">
+                            <h3 class="text-2xl font-bold mb-6" data-translate="our_office_title">Notre Bureau</h3>
+                            <div class="space-y-6 text-gray-600">
+                                <div class="flex items-start">
+                                    <svg class="w-6 h-6 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                    <div class="ml-4 rtl:mr-4 rtl:ml-0">
+                                        <p class="font-semibold" data-translate="address_label">Adresse</p>
+                                        <p data-translate="address_value">INRA SETTAT - ROUTE TERTIAIRE 1406 - KM 05 - SETTAT (BP : 208)</p>
+                                    </div>
+                                </div>
+                                 <div class="flex items-start">
+                                    <svg class="w-6 h-6 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                    <div class="ml-4 rtl:mr-4 rtl:ml-0">
+                                        <p class="font-semibold" data-translate="email_label">E-mail</p>
+                                        <a href="mailto:agenda.settat@gmail.com" class="hover:text-green-600">agenda.settat@gmail.com</a>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <svg class="w-6 h-6 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                                    <div class="ml-4 rtl:mr-4 rtl:ml-0">
+                                        <p class="font-semibold" data-translate="website_label">Site Web</p>
+                                        <a href="http://www.ass-agenda.org" target="_blank" class="hover:text-green-600">www.ass-agenda.org</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-8 rounded-lg overflow-hidden h-64">
+                               <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1673.929630125004!2d-7.625096000000001!3d32.954725!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xda605ec3a67d8b3%3A0x808a47f66638c0cc!2sInstitute%20National%20De%20La%20Recherche%20Agronomique!5e0!3m2!1sen!2sma!4v1756674137365!5m2!1sen!2sma" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                            </div>
+                         </div>
+                    </div>
+                 </div>
+            </div>
+        </section>
+        
+    </main>
+    
+<footer id="contact" class="bg-gray-800 text-white pt-16">
+    <div class="container mx-auto px-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center md:text-start">
+
+            <div class="md:col-span-2">
+                <img style="border-radius: 8px;" src="Agenda (2).png" alt="Association Logo" class="h-12 mb-4 mx-auto md:mx-0">
+                <p class="text-gray-400" data-translate="footer_about">Cultiver un avenir durable pour l'agriculture marocaine grâce à l'innovation et à la communauté.</p>
+            </div>
+
+            <div>
+                <h4 class="font-bold text-lg mb-4" data-translate="footer_links_title">Liens Rapides</h4>
+                <ul>
+                    <li class="mb-2"><a href="about.html" class="hover:text-green-400 transition-colors" data-translate="nav_about">Qui Sommes-Nous</a></li>
+                    <li class="mb-2"><a href="activities.html" class="hover:text-green-400 transition-colors" data-translate="nav_activities">Nos Activités</a></li>
+                    <li class="mb-2"><a href="projects.html" class="hover:text-green-400 transition-colors" data-translate="nav_projects">Nos Projets</a></li>
+                    <li class="mb-2"><a href="partners.html" class="hover:text-green-400 transition-colors" data-translate="nav_partners">Nos Partenaires</a></li>
+                </ul>
+            </div>
+
+            <div class="flex flex-col items-center md:items-start">
+                <h4 class="font-bold text-lg mb-4" data-translate="footer_follow_us">Suivez-Nous</h4>
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors" aria-label="Facebook"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M22.675 0h-21.35C.59 0 0 .59 0 1.325v21.35C0 23.41.59 24 1.325 24H12.82v-9.29H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.735 0 1.325-.59 1.325-1.325V1.325C24 .59 23.405 0 22.675 0z"/></svg></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors" aria-label="Instagram"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.012 3.584-.07 4.85c-.148 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.012-3.584.07-4.85c.148-3.225 1.664-4.771 4.919-4.919C8.416 2.175 8.796 2.163 12 2.163zm0-1.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072s3.667-.014 4.947-.072c4.358-.2 6.78-2.618 6.98-6.98.059-1.281.073-1.689.073-4.948s-.014-3.667-.072-4.947c-.2-4.358-2.618-6.78-6.98-6.98C15.668 1.014 15.259 1 12 1zm0 5.838a5 5 0 100 10 5 5 0 000-10zm0 8.838a3.838 3.838 0 110-7.676 3.838 3.838 0 010 7.676zm4.938-9.712a1.162 1.162 0 100-2.324 1.162 1.162 0 000 2.324z"/></svg></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors" aria-label="WhatsApp"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.38 1.25 4.82l-1.34 4.89 5.02-1.32c1.39.71 2.97 1.12 4.6 1.12h.01c5.46 0 9.91-4.45 9.91-9.91s-4.45-9.91-9.91-9.91zM17.47 14.38c-.2-.1-.72-.36-1.08-.5-2.83-.94-2.83-2.83 0-3.77.36-.14.88-.4 1.08-.5.2-.1.3-.24.3-.44s-.1-.3-.2-.4l-1.58-1.58c-.1-.1-.24-.2-.4-.2s-.3.05-.4.15l-.78.78c-.2.2-.4.4-.6.5s-.4.2-.6.1c-1.3-.45-2.34-1.49-3.22-2.37-.88-.88-1.92-1.92-2.37-3.22-.1-.2-.05-.4.1-.6s.3-.4.5-.6l.78-.78c.1-.1.15-.3.15-.4s-.1-.3-.2-.4L7.3 3.53c-.1-.1-.24-.2-.4-.2s-.3.05-.4.15L5.57 4.4c-.2.2-.4.4-.5.6s-.2.4-.1.6c.45 1.3 1.49 2.34 2.37 3.22.88.88 1.92 1.92 3.22 2.37.2.1.4.15.6.05s.4-.2.6-.5l.78-.78c.1-.1.3-.15.4-.15s.3.05.4.15l1.58 1.58c.1.1.2.24.2.4s-.05.3-.15.4z"/></svg></a>
+                    <a href="mailto:contact@agridurable.org" class="text-gray-400 hover:text-white transition-colors" aria-label="Email"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/></svg></a>
+                </div>
+            </div>
+        </div>
+        <div style="padding-bottom: 10px;" class="mt-8 border-t border-gray-700 pt-8 text-center text-gray-400">
+            <p data-translate="footer_copyright">&copy; 2025 Association pour une Agriculture Durable. Tous Droits Réservés.</p>
+        </div>
+    </div>
+</footer>
+<div id="success-overlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div id="success-card" class="bg-white p-8 rounded-2xl shadow-lg text-center max-w-sm mx-auto">
+        <svg class="w-16 h-16 mx-auto text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <h2 class="text-2xl font-bold mt-4" data-translate="success_title">Merci !</h2>
+        <p class="text-gray-600 mt-2" data-translate="success_message">Votre message a été envoyé avec succès. Nous vous répondrons bientôt.</p>
+        <button id="close-success-btn" class="mt-6 bg-green-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-600 transition-all">
+            Fermer
+        </button>
+    </div>
+</div>
+
+
+    <script>
+        const translations = {
+            fr: {
+                title: "Contact - Association AGENDA",
+                nav_about: "Qui Sommes-Nous",
+                nav_activities: "Nos Activités",
+                nav_projects: "Nos Projets",
+                nav_partners: "Nos Partenaires",
+                nav_contact: "Contact",
+                contact_us_btn: "Contactez-Nous",
+                contact_title: "Contactez-Nous",
+                contact_intro: "Nous sommes toujours ravis d'échanger avec vous. N'hésitez pas à nous contacter pour toute question, proposition de partenariat ou simplement pour en savoir plus sur nos actions.",
+                get_in_touch_title: "Restons en contact",
+                our_office_title: "Notre Bureau",
+                address_label: "Adresse",
+                address_value: "INRA SETTAT - ROUTE TERTIAIRE 1406 - KM 05 - SETTAT (BP : 208)",
+                email_label: "E-mail",
+                website_label: "Site Web",
+                form_name_label: "Nom Complet",
+                form_name_placeholder: "Votre nom",
+                form_email_label: "Adresse E-mail",
+                form_email_placeholder: "Votre e-mail",
+                form_subject_label: "Sujet",
+                form_subject_placeholder: "Sujet de votre message",
+                form_message_label: "Votre Message",
+                form_message_placeholder: "Écrivez votre message ici...",
+                form_submit_btn: "Envoyer le Message",
+                footer_about: "Cultiver un avenir durable pour l'agriculture marocaine grâce à l'innovation et à la communauté.",
+                footer_links_title: "Liens Rapides",
+                footer_follow_us: "Suivez-Nous",
+                footer_copyright: "&copy; 2025 Association pour une Agriculture Durable. Tous Droits Réservés."
+            },
+            en: {
+                title: "Contact - AGENDA Association",
+                nav_about: "About Us",
+                nav_activities: "Our Activities",
+                nav_projects: "Our Projects",
+                nav_partners: "Our Partners",
+                nav_contact: "Contact",
+                contact_us_btn: "Contact Us",
+                contact_title: "Contact Us",
+                contact_intro: "We are always happy to hear from you. Feel free to contact us with any questions, partnership proposals, or simply to learn more about our work.",
+                get_in_touch_title: "Get in Touch",
+                our_office_title: "Our Office",
+                address_label: "Address",
+                address_value: "INRA SETTAT - ROUTE TERTIAIRE 1406 - KM 05 - SETTAT (P.O. Box: 208)",
+                email_label: "Email",
+                website_label: "Website",
+                form_name_label: "Full Name",
+                form_name_placeholder: "Your name",
+                form_email_label: "Email Address",
+                form_email_placeholder: "Your email",
+                form_subject_label: "Subject",
+                form_subject_placeholder: "Subject of your message",
+                form_message_label: "Your Message",
+                form_message_placeholder: "Write your message here...",
+                form_submit_btn: "Send Message",
+                footer_about: "Cultivating a sustainable future for Moroccan agriculture through innovation and community.",
+                footer_links_title: "Quick Links",
+                footer_follow_us: "Follow Us",
+                footer_copyright: "&copy; 2025 Association for Sustainable Agriculture. All Rights Reserved."
+            },
+            ar: {
+                title: "اتصل بنا - جمعية أجندة",
+                nav_about: "من نحن",
+                nav_activities: "أنشطتنا",
+                nav_projects: "مشاريعنا",
+                nav_partners: "شركاؤنا",
+                nav_contact: "اتصل بنا",
+                contact_us_btn: "اتصل بنا",
+                contact_title: "اتصل بنا",
+                contact_intro: "يسعدنا دائمًا التواصل معكم. لا تترددوا في الاتصال بنا لأي سؤال أو اقتراح شراكة أو ببساطة لمعرفة المزيد عن أعمالنا.",
+                get_in_touch_title: "ابق على تواصل",
+                our_office_title: "مكتبنا",
+                address_label: "العنوان",
+                address_value: "المعهد الوطني للبحث الزراعي سطات - الطريق الثالثية 1406 - كلم 05 - سطات (ص.ب: 208)",
+                email_label: "البريد الإلكتروني",
+                website_label: "الموقع الإلكتروني",
+                form_name_label: "الاسم الكامل",
+                form_name_placeholder: "اسمك",
+                form_email_label: "البريد الإلكتروني",
+                form_email_placeholder: "بريدك الإلكتروني",
+                form_subject_label: "الموضوع",
+                form_subject_placeholder: "موضوع رسالتك",
+                form_message_label: "رسالتك",
+                form_message_placeholder: "اكتب رسالتك هنا...",
+                form_submit_btn: "إرسال الرسالة",
+                footer_about: "زراعة مستقبل مستدام للزراعة المغربية من خلال الابتكار والمجتمع.",
+                footer_links_title: "روابط سريعة",
+                footer_follow_us: "تابعنا",
+                footer_copyright: "&copy; 2025 جمعية الزراعة المستدامة. كل الحقوق محفوظة."
+            }
+        };
+
+        const flagImageSrc = {
+            fr: 'https://flagcdn.com/w40/fr.png',
+            en: 'https://flagcdn.com/w40/us.png',
+            ar: 'https://flagcdn.com/w40/ma.png'
+        };
+
+        function changeLanguage(lang) {
+            if (!translations[lang] || !flagImageSrc[lang]) return;
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+            document.title = translations[lang].title;
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.getAttribute('data-translate');
+                if (translations[lang][key]) {
+                    element.innerHTML = translations[lang][key];
+                }
+            });
+             document.querySelectorAll('[data-translate-placeholder]').forEach(element => {
+                const key = element.getAttribute('data-translate-placeholder');
+                if (translations[lang][key]) {
+                    element.placeholder = translations[lang][key];
+                }
+            });
+            document.getElementById('selected-lang-icon').src = flagImageSrc[lang];
+            localStorage.setItem('language', lang);
+        }
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const savedLang = localStorage.getItem('language') || 'fr';
+            changeLanguage(savedLang);
+
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    mobileMenuButton.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+    });
+
+    // --- Form Submission Logic ---
+const form = document.querySelector('.contact-form');
+const successOverlay = document.getElementById('success-overlay');
+const closeSuccessBtn = document.getElementById('close-success-btn');
+
+if (form && successOverlay && closeSuccessBtn) {
+    
+    form.addEventListener('submit', function(e) {
+        e.preventDefault(); // This stops the page from redirecting
+
+        const formData = new FormData(form);
+        const object = {};
+        formData.forEach((value, key) => {
+            object[key] = value;
+        });
+        const json = JSON.stringify(object);
+
+        fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: json
+        })
+        .then(async (response) => {
+            let jsonResponse = await response.json();
+            if (response.status == 200) {
+                // SUCCESS
+                successOverlay.classList.remove('hidden'); // Show the overlay
+                form.reset(); // Clear the form fields
+            } else {
+                // ERROR
+                console.log(response);
+                alert('Something went wrong: ' + jsonResponse.message);
+            }
+        })
+        .catch(error => {
+            console.log(error);
+            alert('An error occurred while submitting the form.');
+        });
+    });
+
+    // --- Close Button Logic ---
+    closeSuccessBtn.addEventListener('click', () => {
+        successOverlay.classList.add('hidden'); // Hide the overlay
+    });
+}
+
+
+            const animatedElements = document.querySelectorAll('.animate-on-scroll');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            animatedElements.forEach(el => observer.observe(el));
+        });
+    </script>
+
+</body>
+</html>
