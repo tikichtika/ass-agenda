@@ -171,6 +171,9 @@
             margin-left: 0;
             margin-right: 1rem;
         }
+        [dir="rtl"] .language-dropdown {
+    right: auto; 
+    left: 0;}
 
         .hero-section {
             height: 100vh;
@@ -656,7 +659,7 @@
     <img loading="lazy"src="assets/img/head.png" alt="Lush green plants growing inside a modern greenhouse" class="hero-bg-img">
 </div>
             <div class="hero-content container mx-auto px-6">
-                <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-4" data-translate="hero_title">Un Avenir Vert Pour l'Agriculture</h1>
+                <h1 class="text-4xl sm:text-5xl md:text-7xl font-extrabold leading-tight mb-4" data-translate="hero_title">...</h1>
                 <p class="text-lg md:text-xl mb-8 max-w-2xl mx-auto" data-translate="hero_subtitle">Nous innovons pour une agriculture plus durable, plus intelligente et plus résiliente à travers le Maroc.</p>
                 <a href="about.html" class="inline-block bg-green-500 text-white font-bold py-4 px-10 rounded-lg shadow-xl hover:bg-green-600 transition-all duration-300 transform hover:scale-105 text-lg" data-translate="learn_more_btn">
                     En Savoir Plus
@@ -698,7 +701,7 @@
         <section id="about" class="py-24 bg-white">
             <div class="container mx-auto px-6">
                 <div class="grid md:grid-cols-2 gap-16 items-center">
-                    <div class="animate-on-scroll slide-in-left">
+                    <div class="animate-on-scroll .slide-in-up">
                         <h2 class="text-4xl font-bold mb-6 gradient-text" data-translate="about_title">Cultiver l'Avenir, Ensemble</h2>
                         <p class="text-gray-600 mb-8" data-translate="about_subtitle">Nous sommes plus qu'une association; nous sommes un mouvement dédié à la transformation de l'agriculture au Maroc par l'innovation, l'éducation et la durabilité.</p>
                         <div class="space-y-6">
@@ -731,7 +734,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="animate-on-scroll slide-in-right">
+                    <div class="animate-on-scroll .slide-in-up">
                         <img src="assets/img/3.jpg" class="rounded-2xl shadow-xl w-full h-[600px] object-cover" alt="Group of farmers collaborating">
                     </div>
                 </div>
